@@ -1,0 +1,303 @@
+{% extends 'students/base.html' %}
+{% load humanize %}
+
+{% block title %}{{ student.full_name }} - Student Management System{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="top-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'student_list' %}">Students</a></li>
+                <li class="breadcrumb-item active">{{ student.student_id }}</li>
+            </ol>
+        </nav>
+        <h1>{{ student.full_name }}</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'enrollment_create' %}?student={{ student.pk }}" class="btn btn-outline-primary">
+            <i class="bi bi-journal-plus me-1"></i> Enroll in Course
+        </a>
+        <a href="{% url 'student_update' student.pk %}" class="btn btn-primary">
+            <i class="bi bi-pencil me-1"></i> Edit
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-lg-4 mb-4">
+        <!-- Profile Card -->
+        <div class="card">
+            <div class="card-body text-center py-4">
+                <div class="avatar avatar-lg mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                    {{ student.first_name.0 }}{{ student.last_name.0 }}
+                </div>
+                <h4 class="mb-1">{{ student.full_name }}</h4>
+                <p class="text-muted mb-2"><code>{{ student.student_id }}</code></p>
+                {% if student.is_active %}
+                    <span class="badge bg-success px-3 py-2">
+                        <i class="bi bi-check-circle me-1"></i>Active Student
+                    </span>
+                {% else %}
+                    <span class="badge bg-secondary px-3 py-2">
+                        <i class="bi bi-x-circle me-1"></i>Inactive
+                    </span>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-light">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="fw-bold text-primary">{{ student.gpa }}</div>
+                        <small class="text-muted">GPA</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold text-success">{{ student.enrolled_courses }}</div>
+                        <small class="text-muted">Courses</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold text-info">{{ student.attendance_percentage }}%</div>
+                        <small class="text-muted">Attendance</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'enrollment_create' %}?student={{ student.pk }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                    <i class="bi bi-journal-plus me-1"></i> Enroll in Course
+                </a>
+                <a href="{% url 'fee_create' %}?student={{ student.pk }}" class="btn btn-outline-warning btn-sm w-100 mb-2">
+                    <i class="bi bi-cash me-1"></i> Add Fee
+                </a>
+                <a href="{% url 'student_delete' student.pk %}" class="btn btn-outline-danger btn-sm w-100">
+                    <i class="bi bi-trash me-1"></i> Delete Student
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column -->
+    <div class="col-lg-8">
+        <!-- Personal Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-vcard me-2 text-primary"></i>Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Email</label>
+                        <p class="mb-0"><i class="bi bi-envelope me-1"></i>{{ student.email }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Phone</label>
+                        <p class="mb-0"><i class="bi bi-telephone me-1"></i>{{ student.phone|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Date of Birth</label>
+                        <p class="mb-0"><i class="bi bi-calendar me-1"></i>{{ student.date_of_birth|date:"F d, Y" }} ({{ student.age }} years)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Gender</label>
+                        <p class="mb-0">{{ student.get_gender_display }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Blood Group</label>
+                        <p class="mb-0">{{ student.blood_group|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Address</label>
+                        <p class="mb-0">
+                            {% if student.address %}
+                                {{ student.address }}{% if student.city %}, {{ student.city }}{% endif %}{% if student.state %}, {{ student.state }}{% endif %} {{ student.postal_code }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Academic Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-mortarboard me-2 text-primary"></i>Academic Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Department</label>
+                        <p class="mb-0 fw-semibold">{{ student.department.name|default:"Not assigned" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Current Semester</label>
+                        <p class="mb-0"><span class="badge bg-primary">Semester {{ student.current_semester }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Admission Date</label>
+                        <p class="mb-0">{{ student.admission_date|date:"F d, Y" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Total Credits</label>
+                        <p class="mb-0">{{ student.total_credits }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enrolled Courses -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-journal-bookmark me-2 text-primary"></i>Enrolled Courses</h5>
+                <a href="{% url 'enrollment_create' %}?student={{ student.pk }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus"></i> Add
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if enrollments %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Credits</th>
+                                <th>Grade</th>
+                                <th>Marks</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in enrollments %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'course_detail' enrollment.course.pk %}" class="text-decoration-none">
+                                        <strong>{{ enrollment.course.code }}</strong>
+                                        <div class="small text-muted">{{ enrollment.course.name }}</div>
+                                    </a>
+                                </td>
+                                <td>{{ enrollment.course.credits }}</td>
+                                <td>
+                                    {% if enrollment.grade %}
+                                        <span class="badge {% if enrollment.grade in 'A+,A,A-' %}bg-success{% elif enrollment.grade in 'B+,B,B-' %}bg-primary{% else %}bg-warning{% endif %}">
+                                            {{ enrollment.grade }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ enrollment.marks|default:"-" }}</td>
+                                <td>
+                                    {% if enrollment.completed %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif enrollment.is_active %}
+                                        <span class="badge bg-info">In Progress</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Dropped</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-journal-x text-muted" style="font-size: 2rem;"></i>
+                    <p class="text-muted mt-2 mb-0">Not enrolled in any courses</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Attendance & Fees Row -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-calendar-check me-2 text-success"></i>Attendance Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 col-md-3">
+                                <div class="fw-bold text-success">{{ attendance_summary.present }}</div>
+                                <small class="text-muted">Present</small>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="fw-bold text-danger">{{ attendance_summary.absent }}</div>
+                                <small class="text-muted">Absent</small>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="fw-bold text-warning">{{ attendance_summary.late }}</div>
+                                <small class="text-muted">Late</small>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="fw-bold text-info">{{ attendance_summary.excused }}</div>
+                                <small class="text-muted">Excused</small>
+                            </div>
+                        </div>
+                        {% if attendance_summary.total > 0 %}
+                        <div class="progress mt-3" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: {% widthratio attendance_summary.present attendance_summary.total 100 %}%"></div>
+                            <div class="progress-bar bg-warning" style="width: {% widthratio attendance_summary.late attendance_summary.total 100 %}%"></div>
+                            <div class="progress-bar bg-info" style="width: {% widthratio attendance_summary.excused attendance_summary.total 100 %}%"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-cash-stack me-2 text-warning"></i>Fee Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Total Due</span>
+                            <span class="fw-bold text-danger">${{ fee_summary.total_due|default:0|floatformat:2|intcomma }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Total Paid</span>
+                            <span class="fw-bold text-success">${{ fee_summary.total_paid|default:0|floatformat:2|intcomma }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Guardian Information -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-badge me-2 text-primary"></i>Guardian Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Guardian Name</label>
+                        <p class="mb-0">{{ student.guardian_name|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Relation</label>
+                        <p class="mb-0">{{ student.guardian_relation|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Guardian Phone</label>
+                        <p class="mb-0">{{ student.guardian_phone|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Guardian Email</label>
+                        <p class="mb-0">{{ student.guardian_email|default:"Not provided" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

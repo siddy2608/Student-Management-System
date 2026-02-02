@@ -1,0 +1,172 @@
+{% extends 'students/base.html' %}
+{% load humanize %}
+
+{% block title %}Fees - Student Management System{% endblock %}
+
+{% block content %}
+<div class="top-header">
+    <div>
+        <h1>Fee Management</h1>
+        <p class="text-muted mb-0">Track student fees and payments</p>
+    </div>
+    <a href="{% url 'fee_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Add Fee
+    </a>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon bg-warning bg-opacity-10 text-warning me-3">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+                <div>
+                    <div class="stat-value">${{ summary.total_pending|default:0|floatformat:0|intcomma }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon bg-success bg-opacity-10 text-success me-3">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div>
+                    <div class="stat-value">${{ summary.total_paid|default:0|floatformat:0|intcomma }}</div>
+                    <div class="stat-label">Collected</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon bg-danger bg-opacity-10 text-danger me-3">
+                    <i class="bi bi-exclamation-circle"></i>
+                </div>
+                <div>
+                    <div class="stat-value">${{ summary.total_overdue|default:0|floatformat:0|intcomma }}</div>
+                    <div class="stat-label">Overdue</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-5">
+                <input type="text" name="q" class="form-control" placeholder="Search by student name or ID..." value="{{ query }}">
+            </div>
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="PEN" {% if current_status == 'PEN' %}selected{% endif %}>Pending</option>
+                    <option value="PAI" {% if current_status == 'PAI' %}selected{% endif %}>Paid</option>
+                    <option value="OVD" {% if current_status == 'OVD' %}selected{% endif %}>Overdue</option>
+                    <option value="WAI" {% if current_status == 'WAI' %}selected{% endif %}>Waived</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-1"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Fees Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-cash-stack me-2 text-primary"></i>Fee Records</h5>
+    </div>
+    <div class="card-body p-0">
+        {% if fees %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Fee Type</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Semester</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fees %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2">{{ fee.student.first_name.0 }}{{ fee.student.last_name.0 }}</div>
+                                <div>
+                                    <a href="{% url 'student_detail' fee.student.pk %}" class="text-decoration-none">{{ fee.student.full_name }}</a>
+                                    <div class="small text-muted">{{ fee.student.student_id }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ fee.get_fee_type_display }}</td>
+                        <td class="fw-bold">${{ fee.amount|floatformat:2|intcomma }}</td>
+                        <td>{{ fee.due_date|date:"M d, Y" }}</td>
+                        <td>
+                            {% if fee.status == 'PEN' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif fee.status == 'PAI' %}
+                                <span class="badge bg-success">Paid</span>
+                            {% elif fee.status == 'OVD' %}
+                                <span class="badge bg-danger">Overdue</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Waived</span>
+                            {% endif %}
+                        </td>
+                        <td>Sem {{ fee.semester }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'fee_update' fee.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if fees.has_other_pages %}
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    {% if fees.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ fees.previous_page_number }}"><i class="bi bi-chevron-left"></i></a></li>
+                    {% endif %}
+                    {% for num in fees.paginator.page_range %}
+                        {% if fees.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > fees.number|add:'-3' and num < fees.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if fees.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ fees.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-cash text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2 mb-0">No fee records found</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,289 @@
+{% extends 'students/base.html' %}
+{% load humanize %}
+
+{% block title %}Dashboard - Student Management System{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="top-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="text-muted mb-0">Welcome back, {{ user.username }}!</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'student_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Add Student
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-value">{{ total_students|intcomma }}</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-value">{{ active_students|intcomma }}</div>
+                    <div class="stat-label">Active Students</div>
+                </div>
+                <div class="stat-icon bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-person-check"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-value">{{ total_courses }}</div>
+                    <div class="stat-label">Active Courses</div>
+                </div>
+                <div class="stat-icon bg-info bg-opacity-10 text-info">
+                    <i class="bi bi-book"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-value">{{ total_departments }}</div>
+                    <div class="stat-label">Departments</div>
+                </div>
+                <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-building"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2 text-primary"></i>Student Distribution by Department</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="deptChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>GPA Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="gpaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats & Recent -->
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar-check me-2 text-success"></i>Today's Attendance</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-around text-center mb-3">
+                    <div>
+                        <div class="fs-2 fw-bold text-success">{{ present_today }}</div>
+                        <div class="text-muted small">Present</div>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold text-danger">{{ absent_today }}</div>
+                        <div class="text-muted small">Absent</div>
+                    </div>
+                </div>
+                <a href="{% url 'attendance_take' %}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-plus-circle me-1"></i>Take Attendance
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-cash-stack me-2 text-warning"></i>Fee Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Pending Fees</span>
+                        <span class="fw-bold">${{ pending_fees.total|default:0|floatformat:2|intcomma }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Pending Records</span>
+                        <span class="badge bg-warning">{{ pending_fees.count|default:0 }}</span>
+                    </div>
+                </div>
+                <a href="{% url 'fee_list' %}" class="btn btn-outline-warning w-100">
+                    <i class="bi bi-eye me-1"></i>View All Fees
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-megaphone me-2 text-info"></i>Announcements</h5>
+            </div>
+            <div class="card-body">
+                {% if announcements %}
+                    {% for announcement in announcements %}
+                    <div class="border-bottom pb-2 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong class="small">{{ announcement.title }}</strong>
+                            <span class="badge {% if announcement.priority == 'U' %}bg-danger{% elif announcement.priority == 'H' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                {{ announcement.get_priority_display }}
+                            </span>
+                        </div>
+                        <small class="text-muted">{{ announcement.created_at|date:"M d, Y" }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center mb-0">No announcements</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Students -->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Students</h5>
+        <a href="{% url 'student_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>ID</th>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in recent_students %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2">{{ student.first_name.0 }}{{ student.last_name.0 }}</div>
+                                <div>
+                                    <div class="fw-semibold">{{ student.full_name }}</div>
+                                    <small class="text-muted">{{ student.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><code>{{ student.student_id }}</code></td>
+                        <td>{{ student.department.code|default:"-" }}</td>
+                        <td>Semester {{ student.current_semester }}</td>
+                        <td>
+                            {% if student.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No students found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Department Chart
+    const deptData = {{ dept_distribution|safe }};
+    const deptLabels = deptData.map(d => d.name);
+    const deptCounts = deptData.map(d => d.student_count);
+    
+    new Chart(document.getElementById('deptChart'), {
+        type: 'bar',
+        data: {
+            labels: deptLabels.length ? deptLabels : ['No Data'],
+            datasets: [{
+                label: 'Students',
+                data: deptCounts.length ? deptCounts : [0],
+                backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                borderColor: 'rgba(79, 70, 229, 1)',
+                borderWidth: 1,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+    
+    // GPA Chart
+    const gpaData = {{ gpa_ranges|safe }};
+    new Chart(document.getElementById('gpaChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(gpaData),
+            datasets: [{
+                data: Object.values(gpaData),
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(59, 130, 246, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(249, 115, 22, 0.8)',
+                    'rgba(239, 68, 68, 0.8)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+</script>
+{% endblock %}

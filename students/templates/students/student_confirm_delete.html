@@ -1,0 +1,41 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Delete Student - Student Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion</h5>
+            </div>
+            <div class="card-body text-center py-5">
+                <div class="avatar avatar-lg mx-auto mb-4" style="width: 80px; height: 80px; font-size: 2rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    {{ student.first_name.0 }}{{ student.last_name.0 }}
+                </div>
+                
+                <h4 class="mb-1">{{ student.full_name }}</h4>
+                <p class="text-muted mb-2"><code>{{ student.student_id }}</code></p>
+                <p class="text-muted mb-4">{{ student.email }}</p>
+                
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    This will permanently delete this student and all related records.
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i>Yes, Delete
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

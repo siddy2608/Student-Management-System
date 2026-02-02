@@ -1,0 +1,72 @@
+{% extends 'students/base.html' %}
+
+{% block title %}{{ title }} - Student Management System{% endblock %}
+
+{% block content %}
+<div class="top-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'fee_list' %}">Fees</a></li>
+                <li class="breadcrumb-item active">{{ title }}</li>
+            </ol>
+        </nav>
+        <h1>{{ title }}</h1>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Student <span class="text-danger">*</span></label>
+                            {{ form.student }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fee Type <span class="text-danger">*</span></label>
+                            {{ form.fee_type }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Amount <span class="text-danger">*</span></label>
+                            {{ form.amount }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Due Date <span class="text-danger">*</span></label>
+                            {{ form.due_date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Paid Date</label>
+                            {{ form.paid_date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Semester</label>
+                            {{ form.semester }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Academic Year</label>
+                            {{ form.academic_year }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Remarks</label>
+                            {{ form.remarks }}
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'fee_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">{{ button_text }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

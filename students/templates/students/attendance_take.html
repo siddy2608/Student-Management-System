@@ -1,0 +1,134 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Take Attendance - Student Management System{% endblock %}
+
+{% block content %}
+<div class="top-header">
+    <div>
+        <h1>Take Attendance</h1>
+        <p class="text-muted mb-0">Record student attendance</p>
+    </div>
+</div>
+
+<!-- Course Selection -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">Course <span class="text-danger">*</span></label>
+                <select name="course" class="form-select" required onchange="this.form.submit()">
+                    <option value="">Select Course</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}" {% if current_course == course.id|stringformat:"s" %}selected{% endif %}>{{ course.code }} - {{ course.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" class="form-control" value="{{ current_date }}" onchange="this.form.submit()">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-search me-1"></i> Load Students
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if students %}
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="course" value="{{ current_course }}">
+    <input type="hidden" name="date" value="{{ current_date }}">
+    
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-people me-2 text-primary"></i>Students ({{ students|length }})</h5>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-success" onclick="markAll('P')">All Present</button>
+                <button type="button" class="btn btn-outline-danger" onclick="markAll('A')">All Absent</button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in students %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-sm me-2">{{ item.student.first_name.0 }}{{ item.student.last_name.0 }}</div>
+                                    <div>
+                                        <strong>{{ item.student.full_name }}</strong>
+                                        <div class="small text-muted">{{ item.student.student_id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="status_{{ item.student.pk }}" id="p_{{ item.student.pk }}" value="P" {% if item.status == 'P' %}checked{% endif %}>
+                                    <label class="btn btn-outline-success btn-sm" for="p_{{ item.student.pk }}">Present</label>
+                                    
+                                    <input type="radio" class="btn-check" name="status_{{ item.student.pk }}" id="a_{{ item.student.pk }}" value="A" {% if item.status == 'A' %}checked{% endif %}>
+                                    <label class="btn btn-outline-danger btn-sm" for="a_{{ item.student.pk }}">Absent</label>
+                                    
+                                    <input type="radio" class="btn-check" name="status_{{ item.student.pk }}" id="l_{{ item.student.pk }}" value="L" {% if item.status == 'L' %}checked{% endif %}>
+                                    <label class="btn btn-outline-warning btn-sm" for="l_{{ item.student.pk }}">Late</label>
+                                    
+                                    <input type="radio" class="btn-check" name="status_{{ item.student.pk }}" id="e_{{ item.student.pk }}" value="E" {% if item.status == 'E' %}checked{% endif %}>
+                                    <label class="btn btn-outline-info btn-sm" for="e_{{ item.student.pk }}">Excused</label>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" name="remarks_{{ item.student.pk }}" class="form-control form-control-sm" placeholder="Optional remarks" value="{{ item.remarks }}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'attendance_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i> Save Attendance
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% elif current_course %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-2 mb-0">No students enrolled in this course</p>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-hand-index text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-2 mb-0">Select a course to take attendance</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function markAll(status) {
+    document.querySelectorAll(`input[value="${status}"]`).forEach(input => {
+        input.checked = true;
+    });
+}
+</script>
+{% endblock %}

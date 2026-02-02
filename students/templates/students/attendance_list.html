@@ -1,0 +1,105 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Attendance - Student Management System{% endblock %}
+
+{% block content %}
+<div class="top-header">
+    <div>
+        <h1>Attendance Records</h1>
+        <p class="text-muted mb-0">View and manage attendance</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'export_attendance' %}?{{ request.GET.urlencode }}" class="btn btn-outline-success">
+            <i class="bi bi-download me-1"></i> Export
+        </a>
+        <a href="{% url 'attendance_take' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Take Attendance
+        </a>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" class="form-control" value="{{ current_date }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Course</label>
+                <select name="course" class="form-select">
+                    <option value="">All Courses</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}" {% if current_course == course.id|stringformat:"s" %}selected{% endif %}>{{ course.code }} - {{ course.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-1"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Attendance Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Attendance for {{ current_date }}</h5>
+    </div>
+    <div class="card-body p-0">
+        {% if attendance_records %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Recorded By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2">{{ record.student.first_name.0 }}{{ record.student.last_name.0 }}</div>
+                                <div>
+                                    <a href="{% url 'student_detail' record.student.pk %}" class="text-decoration-none">{{ record.student.full_name }}</a>
+                                    <div class="small text-muted">{{ record.student.student_id }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ record.course.code }}</td>
+                        <td>
+                            {% if record.status == 'P' %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Present</span>
+                            {% elif record.status == 'A' %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Absent</span>
+                            {% elif record.status == 'L' %}
+                                <span class="badge bg-warning"><i class="bi bi-clock me-1"></i>Late</span>
+                            {% else %}
+                                <span class="badge bg-info"><i class="bi bi-info-circle me-1"></i>Excused</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ record.remarks|default:"-" }}</td>
+                        <td>{{ record.recorded_by.username|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2 mb-0">No attendance records for this date</p>
+            <a href="{% url 'attendance_take' %}" class="btn btn-primary mt-3">Take Attendance</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
