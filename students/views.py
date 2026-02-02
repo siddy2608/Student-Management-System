@@ -219,7 +219,7 @@ def student_detail(request, pk):
         'present': attendance_records.filter(status='P').count(),
         'absent': attendance_records.filter(status='A').count(),
         'late': attendance_records.filter(status='L').count(),
-        'excused': attendance_records.filter(status='E').count(),
+        'excused': attendance_records.filter(status__in=['OD', 'ML']).count(),
     }
     
     # Get fees

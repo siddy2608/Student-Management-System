@@ -134,7 +134,7 @@
                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-1">
                         <span class="text-muted">Pending Fees</span>
-                        <span class="fw-bold">${{ pending_fees.total|default:0|floatformat:2|intcomma }}</span>
+                        <span class="fw-bold">₹{{ pending_fees.total|default:0|floatformat:0|intcomma }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span class="text-muted">Pending Records</span>

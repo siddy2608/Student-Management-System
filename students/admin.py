@@ -20,9 +20,9 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('student_id', 'full_name', 'email', 'department', 'current_semester', 'gpa', 'is_active')
-    list_filter = ('is_active', 'gender', 'department', 'current_semester')
-    search_fields = ('first_name', 'last_name', 'email', 'student_id')
+    list_display = ('student_id', 'full_name', 'email', 'department', 'current_semester', 'cgpa', 'category', 'is_active')
+    list_filter = ('is_active', 'gender', 'department', 'current_semester', 'category', 'state', 'is_hosteler')
+    search_fields = ('first_name', 'last_name', 'email', 'student_id', 'aadhaar_number', 'phone')
     list_editable = ('is_active',)
     list_per_page = 20
     ordering = ('-created_at',)
@@ -32,16 +32,35 @@ class StudentAdmin(admin.ModelAdmin):
             'fields': ('student_id', 'first_name', 'last_name', 'email', 'phone', 
                       'date_of_birth', 'gender', 'blood_group')
         }),
+        ('Indian Specific', {
+            'fields': ('aadhaar_number', 'category', 'religion', 'nationality', 'mother_tongue')
+        }),
         ('Address', {
-            'fields': ('address', 'city', 'state', 'postal_code'),
+            'fields': ('address', 'city', 'district', 'state', 'pincode'),
             'classes': ('collapse',)
         }),
-        ('Guardian Information', {
-            'fields': ('guardian_name', 'guardian_phone', 'guardian_email', 'guardian_relation'),
+        ('Family Information', {
+            'fields': ('father_name', 'father_occupation', 'father_phone',
+                      'mother_name', 'mother_occupation', 'mother_phone',
+                      'guardian_name', 'guardian_phone', 'guardian_email', 'guardian_relation',
+                      'annual_family_income'),
+            'classes': ('collapse',)
+        }),
+        ('Previous Education - 10th', {
+            'fields': ('tenth_board', 'tenth_school', 'tenth_year', 'tenth_percentage'),
+            'classes': ('collapse',)
+        }),
+        ('Previous Education - 12th', {
+            'fields': ('twelfth_board', 'twelfth_school', 'twelfth_year', 'twelfth_percentage', 'twelfth_stream'),
             'classes': ('collapse',)
         }),
         ('Academic Information', {
-            'fields': ('department', 'admission_date', 'current_semester', 'gpa', 'total_credits', 'is_active')
+            'fields': ('department', 'admission_date', 'admission_type', 'roll_number',
+                      'current_semester', 'cgpa', 'total_credits', 'is_active')
+        }),
+        ('Hostel', {
+            'fields': ('is_hosteler', 'hostel_room'),
+            'classes': ('collapse',)
         }),
     )
     
@@ -50,10 +69,10 @@ class StudentAdmin(admin.ModelAdmin):
 
 @admin.register(Enrollment)
 class EnrollmentAdmin(admin.ModelAdmin):
-    list_display = ('student', 'course', 'enrolled_date', 'grade', 'marks', 'is_active', 'completed')
+    list_display = ('student', 'course', 'enrolled_date', 'grade', 'internal_marks', 'external_marks', 'is_active', 'completed')
     list_filter = ('is_active', 'completed', 'grade', 'course')
     search_fields = ('student__first_name', 'student__last_name', 'course__code')
-    list_editable = ('grade', 'marks', 'is_active', 'completed')
+    list_editable = ('grade', 'internal_marks', 'external_marks', 'is_active', 'completed')
     autocomplete_fields = ('student', 'course')
 
 
@@ -68,9 +87,9 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 @admin.register(Fee)
 class FeeAdmin(admin.ModelAdmin):
-    list_display = ('student', 'fee_type', 'amount', 'due_date', 'status', 'semester', 'academic_year')
-    list_filter = ('status', 'fee_type', 'semester', 'academic_year')
-    search_fields = ('student__first_name', 'student__last_name', 'student__student_id')
+    list_display = ('student', 'fee_type', 'amount', 'due_date', 'status', 'payment_mode', 'semester', 'academic_year')
+    list_filter = ('status', 'fee_type', 'payment_mode', 'semester', 'academic_year')
+    search_fields = ('student__first_name', 'student__last_name', 'student__student_id', 'receipt_number')
     list_editable = ('status',)
     date_hierarchy = 'due_date'
 

@@ -17,58 +17,76 @@
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-lg-10">
+    <div class="col-lg-11">
         <form method="POST" novalidate>
             {% csrf_token %}
             
             <!-- Personal Information -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-person me-2 text-primary"></i>Personal Information</h5>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person me-2"></i>Personal Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
-                                First Name <span class="text-danger">*</span>
-                            </label>
+                        <div class="col-md-4">
+                            <label class="form-label">First Name <span class="text-danger">*</span></label>
                             {{ form.first_name }}
-                            {% if form.first_name.errors %}<div class="text-danger small">{{ form.first_name.errors.0 }}</div>{% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
-                                Last Name <span class="text-danger">*</span>
-                            </label>
+                        <div class="col-md-4">
+                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
                             {{ form.last_name }}
-                            {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors.0 }}</div>{% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.email.id_for_label }}" class="form-label">
-                                Email <span class="text-danger">*</span>
-                            </label>
+                        <div class="col-md-4">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
                             {{ form.email }}
-                            {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors.0 }}</div>{% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone</label>
+                        <div class="col-md-3">
+                            <label class="form-label">Mobile Number</label>
                             {{ form.phone }}
                         </div>
-                        <div class="col-md-4">
-                            <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
-                                Date of Birth <span class="text-danger">*</span>
-                            </label>
+                        <div class="col-md-3">
+                            <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
                             {{ form.date_of_birth }}
-                            {% if form.date_of_birth.errors %}<div class="text-danger small">{{ form.date_of_birth.errors.0 }}</div>{% endif %}
                         </div>
-                        <div class="col-md-4">
-                            <label for="{{ form.gender.id_for_label }}" class="form-label">
-                                Gender <span class="text-danger">*</span>
-                            </label>
+                        <div class="col-md-3">
+                            <label class="form-label">Gender <span class="text-danger">*</span></label>
                             {{ form.gender }}
                         </div>
-                        <div class="col-md-4">
-                            <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group</label>
+                        <div class="col-md-3">
+                            <label class="form-label">Blood Group</label>
                             {{ form.blood_group }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Indian Specific Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-card-checklist me-2"></i>Identity & Category</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Aadhaar Number</label>
+                            {{ form.aadhaar_number }}
+                            <small class="text-muted">12-digit Aadhaar number</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Category <span class="text-danger">*</span></label>
+                            {{ form.category }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Religion</label>
+                            {{ form.religion }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Nationality</label>
+                            {{ form.nationality }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mother Tongue</label>
+                            {{ form.mother_tongue }}
                         </div>
                     </div>
                 </div>
@@ -76,53 +94,133 @@
             
             <!-- Address -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-geo-alt me-2 text-primary"></i>Address</h5>
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Permanent Address</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-12">
-                            <label for="{{ form.address.id_for_label }}" class="form-label">Street Address</label>
+                            <label class="form-label">Address</label>
                             {{ form.address }}
                         </div>
-                        <div class="col-md-4">
-                            <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                        <div class="col-md-3">
+                            <label class="form-label">City/Village</label>
                             {{ form.city }}
                         </div>
-                        <div class="col-md-4">
-                            <label for="{{ form.state.id_for_label }}" class="form-label">State</label>
+                        <div class="col-md-3">
+                            <label class="form-label">District</label>
+                            {{ form.district }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">State</label>
                             {{ form.state }}
                         </div>
-                        <div class="col-md-4">
-                            <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal Code</label>
-                            {{ form.postal_code }}
+                        <div class="col-md-3">
+                            <label class="form-label">PIN Code</label>
+                            {{ form.pincode }}
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Guardian Information -->
+            <!-- Parent/Guardian Information -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-person-badge me-2 text-primary"></i>Guardian Information</h5>
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-people me-2"></i>Parent/Guardian Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="{{ form.guardian_name.id_for_label }}" class="form-label">Guardian Name</label>
+                        <div class="col-md-4">
+                            <label class="form-label">Father's Name</label>
+                            {{ form.father_name }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Father's Occupation</label>
+                            {{ form.father_occupation }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Father's Mobile</label>
+                            {{ form.father_phone }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mother's Name</label>
+                            {{ form.mother_name }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mother's Occupation</label>
+                            {{ form.mother_occupation }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mother's Mobile</label>
+                            {{ form.mother_phone }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Guardian Name</label>
                             {{ form.guardian_name }}
                         </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.guardian_relation.id_for_label }}" class="form-label">Relation</label>
-                            {{ form.guardian_relation }}
-                        </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.guardian_phone.id_for_label }}" class="form-label">Guardian Phone</label>
+                        <div class="col-md-3">
+                            <label class="form-label">Guardian Phone</label>
                             {{ form.guardian_phone }}
                         </div>
-                        <div class="col-md-6">
-                            <label for="{{ form.guardian_email.id_for_label }}" class="form-label">Guardian Email</label>
+                        <div class="col-md-3">
+                            <label class="form-label">Guardian Email</label>
                             {{ form.guardian_email }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Annual Family Income (₹)</label>
+                            {{ form.annual_family_income }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Previous Education -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-mortarboard me-2"></i>Previous Education</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">Class 10th (SSC/Matriculation)</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label">Board</label>
+                            {{ form.tenth_board }}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">School Name</label>
+                            {{ form.tenth_school }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Year</label>
+                            {{ form.tenth_year }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Percentage</label>
+                            {{ form.tenth_percentage }}
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted mb-3">Class 12th (HSC/Intermediate)</h6>
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Board</label>
+                            {{ form.twelfth_board }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">School/College Name</label>
+                            {{ form.twelfth_school }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Year</label>
+                            {{ form.twelfth_year }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Percentage</label>
+                            {{ form.twelfth_percentage }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Stream</label>
+                            {{ form.twelfth_stream }}
                         </div>
                     </div>
                 </div>
@@ -130,35 +228,53 @@
             
             <!-- Academic Information -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-mortarboard me-2 text-primary"></i>Academic Information</h5>
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-journal-bookmark me-2"></i>Current Academic Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="{{ form.department.id_for_label }}" class="form-label">Department</label>
+                        <div class="col-md-4">
+                            <label class="form-label">Department</label>
                             {{ form.department }}
                         </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Admission Type</label>
+                            {{ form.admission_type }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Roll Number</label>
+                            {{ form.roll_number }}
+                        </div>
                         <div class="col-md-3">
-                            <label for="{{ form.current_semester.id_for_label }}" class="form-label">Current Semester</label>
+                            <label class="form-label">Current Semester</label>
                             {{ form.current_semester }}
                         </div>
                         <div class="col-md-3">
-                            <label for="{{ form.gpa.id_for_label }}" class="form-label">GPA</label>
-                            {{ form.gpa }}
+                            <label class="form-label">CGPA (out of 10)</label>
+                            {{ form.cgpa }}
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-check form-switch mt-4">
                                 {{ form.is_active }}
-                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active Student</label>
+                                <label class="form-check-label">Active Student</label>
                             </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch mt-4">
+                                {{ form.is_hosteler }}
+                                <label class="form-check-label">Hosteler</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Hostel Room</label>
+                            {{ form.hostel_room }}
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- Actions -->
-            <div class="d-flex gap-2 justify-content-end">
+            <div class="d-flex gap-2 justify-content-end mb-4">
                 <a href="{% url 'student_list' %}" class="btn btn-outline-secondary">
                     <i class="bi bi-x-lg me-1"></i>Cancel
                 </a>

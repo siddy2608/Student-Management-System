@@ -58,94 +58,78 @@ class SignUpForm(UserCreationForm):
 
 
 class StudentForm(forms.ModelForm):
-    """Form for creating and updating students."""
+    """Form for creating and updating Indian students."""
     
     class Meta:
         model = Student
         fields = [
+            # Personal Info
             'first_name', 'last_name', 'email', 'phone',
-            'date_of_birth', 'gender', 'blood_group', 
-            'address', 'city', 'state', 'postal_code',
+            'date_of_birth', 'gender', 'blood_group',
+            # Indian Specific
+            'aadhaar_number', 'category', 'religion', 'nationality', 'mother_tongue',
+            # Address
+            'address', 'city', 'district', 'state', 'pincode',
+            # Family Info
+            'father_name', 'father_occupation', 'father_phone',
+            'mother_name', 'mother_occupation', 'mother_phone',
             'guardian_name', 'guardian_phone', 'guardian_email', 'guardian_relation',
-            'department', 'current_semester', 'gpa', 'is_active'
+            'annual_family_income',
+            # 10th Details
+            'tenth_board', 'tenth_school', 'tenth_year', 'tenth_percentage',
+            # 12th Details
+            'twelfth_board', 'twelfth_school', 'twelfth_year', 'twelfth_percentage', 'twelfth_stream',
+            # Academic
+            'department', 'admission_type', 'current_semester', 'cgpa', 'roll_number',
+            # Status
+            'is_active', 'is_hosteler', 'hostel_room'
         ]
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter first name'
-            }),
-            'last_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter last name'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter email address'
-            }),
-            'phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter phone number'
-            }),
-            'date_of_birth': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'gender': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'blood_group': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'address': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 2,
-                'placeholder': 'Enter street address'
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'City'
-            }),
-            'state': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'State'
-            }),
-            'postal_code': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Postal code'
-            }),
-            'guardian_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Guardian name'
-            }),
-            'guardian_phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Guardian phone'
-            }),
-            'guardian_email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Guardian email'
-            }),
-            'guardian_relation': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Relation (e.g., Father, Mother)'
-            }),
-            'department': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'current_semester': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1,
-                'max': 8
-            }),
-            'gpa': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'step': '0.01',
-                'min': '0',
-                'max': '4'
-            }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '10-digit mobile number'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'gender': forms.Select(attrs={'class': 'form-select'}),
+            'blood_group': forms.Select(attrs={'class': 'form-select'}),
+            'aadhaar_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '12-digit Aadhaar number', 'maxlength': '12'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'religion': forms.Select(attrs={'class': 'form-select'}),
+            'nationality': forms.TextInput(attrs={'class': 'form-control'}),
+            'mother_tongue': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Hindi, Tamil, Bengali'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'district': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.Select(attrs={'class': 'form-select'}),
+            'pincode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '6-digit PIN code', 'maxlength': '6'}),
+            'father_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'father_occupation': forms.TextInput(attrs={'class': 'form-control'}),
+            'father_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '10-digit mobile'}),
+            'mother_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'mother_occupation': forms.TextInput(attrs={'class': 'form-control'}),
+            'mother_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '10-digit mobile'}),
+            'guardian_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'guardian_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'guardian_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'guardian_relation': forms.TextInput(attrs={'class': 'form-control'}),
+            'annual_family_income': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Annual income in ₹'}),
+            'tenth_board': forms.Select(attrs={'class': 'form-select'}),
+            'tenth_school': forms.TextInput(attrs={'class': 'form-control'}),
+            'tenth_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 2020'}),
+            'tenth_percentage': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Percentage'}),
+            'twelfth_board': forms.Select(attrs={'class': 'form-select'}),
+            'twelfth_school': forms.TextInput(attrs={'class': 'form-control'}),
+            'twelfth_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 2022'}),
+            'twelfth_percentage': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Percentage'}),
+            'twelfth_stream': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Science/Commerce/Arts'}),
+            'department': forms.Select(attrs={'class': 'form-select'}),
+            'admission_type': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'JEE/NEET/CET/Management'}),
+            'current_semester': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 8}),
+            'cgpa': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0', 'max': '10'}),
+            'roll_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_hosteler': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'hostel_room': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Room number'}),
         }
 
 
@@ -183,41 +167,15 @@ class CourseForm(forms.ModelForm):
             'credits', 'semester', 'instructor', 'max_students', 'is_active'
         ]
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Course name'
-            }),
-            'code': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Course code (e.g., CS101)'
-            }),
-            'department': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Course description'
-            }),
-            'credits': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1,
-                'max': 6
-            }),
-            'semester': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'instructor': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Instructor name'
-            }),
-            'max_students': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1
-            }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Course name'}),
+            'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., CS101'}),
+            'department': forms.Select(attrs={'class': 'form-select'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'credits': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 6}),
+            'semester': forms.Select(attrs={'class': 'form-select'}),
+            'instructor': forms.TextInput(attrs={'class': 'form-control'}),
+            'max_students': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 
@@ -228,23 +186,10 @@ class DepartmentForm(forms.ModelForm):
         model = Department
         fields = ['name', 'code', 'description', 'head']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Department name'
-            }),
-            'code': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Department code (e.g., CS, EE)'
-            }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Department description'
-            }),
-            'head': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Department head name'
-            }),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Department name'}),
+            'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., CS, ECE'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'head': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'HOD Name'}),
         }
 
 
@@ -253,29 +198,15 @@ class EnrollmentForm(forms.ModelForm):
     
     class Meta:
         model = Enrollment
-        fields = ['student', 'course', 'grade', 'marks', 'is_active', 'completed']
+        fields = ['student', 'course', 'grade', 'internal_marks', 'external_marks', 'is_active', 'completed']
         widgets = {
-            'student': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'course': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'grade': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'marks': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'step': '0.01',
-                'min': 0,
-                'max': 100
-            }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
-            'completed': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
+            'student': forms.Select(attrs={'class': 'form-select'}),
+            'course': forms.Select(attrs={'class': 'form-select'}),
+            'grade': forms.Select(attrs={'class': 'form-select'}),
+            'internal_marks': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': 0, 'max': 40, 'placeholder': 'Out of 40'}),
+            'external_marks': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': 0, 'max': 60, 'placeholder': 'Out of 60'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'completed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
     
     def __init__(self, *args, **kwargs):
@@ -291,23 +222,11 @@ class AttendanceForm(forms.ModelForm):
         model = Attendance
         fields = ['student', 'course', 'date', 'status', 'remarks']
         widgets = {
-            'student': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'course': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'status': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'remarks': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Optional remarks'
-            }),
+            'student': forms.Select(attrs={'class': 'form-select'}),
+            'course': forms.Select(attrs={'class': 'form-select'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'remarks': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -323,50 +242,29 @@ class BulkAttendanceForm(forms.Form):
 
 
 class FeeForm(forms.ModelForm):
-    """Form for fee management."""
+    """Form for fee management (INR)."""
     
     class Meta:
         model = Fee
         fields = [
             'student', 'fee_type', 'amount', 'due_date', 
-            'paid_date', 'status', 'semester', 'academic_year', 'remarks'
+            'paid_date', 'paid_amount', 'payment_mode', 'transaction_id',
+            'receipt_number', 'status', 'semester', 'academic_year', 'remarks'
         ]
         widgets = {
-            'student': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'fee_type': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'amount': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'step': '0.01',
-                'min': 0
-            }),
-            'due_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'paid_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'status': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'semester': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1,
-                'max': 8
-            }),
-            'academic_year': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '2025-2026'
-            }),
-            'remarks': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 2
-            }),
+            'student': forms.Select(attrs={'class': 'form-select'}),
+            'fee_type': forms.Select(attrs={'class': 'form-select'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': 0, 'placeholder': 'Amount in ₹'}),
+            'due_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'paid_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'paid_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': 0}),
+            'payment_mode': forms.Select(attrs={'class': 'form-select'}),
+            'transaction_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'UPI/NEFT Reference'}),
+            'receipt_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'semester': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 8}),
+            'academic_year': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '2025-2026'}),
+            'remarks': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
 
 
@@ -377,26 +275,10 @@ class AnnouncementForm(forms.ModelForm):
         model = Announcement
         fields = ['title', 'content', 'priority', 'department', 'is_active', 'expires_at']
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Announcement title'
-            }),
-            'content': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Announcement content'
-            }),
-            'priority': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'department': forms.Select(attrs={
-                'class': 'form-select'
-            }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
-            'expires_at': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local'
-            }),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'priority': forms.Select(attrs={'class': 'form-select'}),
+            'department': forms.Select(attrs={'class': 'form-select'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'expires_at': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         }
